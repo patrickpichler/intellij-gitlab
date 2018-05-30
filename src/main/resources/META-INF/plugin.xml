@@ -1,7 +1,7 @@
 <idea-plugin>
     <id>com.pichler.gitlab</id>
-    <name>Plugin display name here</name>
-    <vendor email="support@yourcompany.com" url="http://www.yourcompany.com">YourCompany</vendor>
+    <name>Gitlab</name>
+    <vendor email="patri.pichler@gmail.com">YourCompany</vendor>
 
     <description><![CDATA[
     Enter short description for your plugin here.<br>
@@ -13,9 +13,15 @@
     <!-- uncomment to enable plugin in all products
     <depends>com.intellij.modules.lang</depends>
     -->
+    <depends>com.intellij.modules.vcs</depends>
+    <depends>org.jetbrains.kotlin</depends>
 
     <extensions defaultExtensionNs="com.intellij">
         <!-- Add your extensions here -->
+        <projectConfigurable groupId="tools" groupWeight="130" displayName="Gitlab" id="gitlab"
+                             instance="com.pichler.gitlabplugin.GitlabOptionsConfigurable"/>
+
+        <applicationService serviceImplementation="com.pichler.gitlabplugin.GitlabConfigurationStateService"/>
     </extensions>
 
     <actions>
