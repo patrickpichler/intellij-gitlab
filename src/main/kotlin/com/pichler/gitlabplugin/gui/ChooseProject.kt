@@ -1,9 +1,12 @@
 package com.pichler.gitlabplugin.gui
 
+import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.DialogWrapper
 import com.intellij.ui.DoubleClickListener
 import com.intellij.ui.TableSpeedSearch
+import com.intellij.ui.ToggleActionButton
+import com.intellij.ui.ToolbarDecorator
 import com.intellij.ui.components.JBLoadingPanel
 import com.intellij.ui.layout.CCFlags
 import com.intellij.ui.layout.panel
@@ -17,7 +20,6 @@ import java.awt.BorderLayout
 import java.awt.Dimension
 import java.awt.event.MouseEvent
 import javax.swing.JComponent
-import javax.swing.JScrollPane
 import javax.swing.ListSelectionModel
 import javax.swing.SwingUtilities
 import com.pichler.gitlabplugin.model.Project as GitlabProject
@@ -25,7 +27,6 @@ import com.pichler.gitlabplugin.model.Project as GitlabProject
 class ChooseProjectDialog(
         project: Project,
         private val gitlabAPI: GitlabAPI
-//        gitlabProjects: List<GitlabProject>
 ) {
 
     private val EMPTY_MODEL = buildTableModel(emptyList())
@@ -36,8 +37,10 @@ class ChooseProjectDialog(
 
     private val projectChooseDialog: ProjectChooseDialog = buildDialogWrapper(project, projectTable)
 
+    private var filterStaredProjects: Boolean = false
+
     init {
-        loadProjects()
+        refreshProjects()
     }
 
     private fun buildTableModel(projects: List<GitlabProject>): ColumnTableModel<GitlabProject> {
@@ -62,7 +65,23 @@ class ChooseProjectDialog(
     }
 
     private fun buildDialogWrapper(project: Project, projectTable: JBTable): ProjectChooseDialog {
-        val dialog = ProjectChooseDialog(project, projectTable) {
+
+        val projectTableDecorated = ToolbarDecorator.createDecorator(projectTable)
+                .disableAddAction()
+                .disableUpDownActions()
+                .disableRemoveAction()
+                .addExtraAction(object : ToggleActionButton("Stared", icons.GitlabPluginIcons.Star) {
+                    override fun isSelected(e: AnActionEvent?): Boolean = filterStaredProjects
+
+                    override fun setSelected(e: AnActionEvent?, state: Boolean) {
+                        filterStaredProjects = state
+                        refreshProjects()
+                    }
+                })
+                .initPosition()
+                .createPanel()
+
+        val dialog = ProjectChooseDialog(project, projectTableDecorated) {
             this.projectTable.selectedRowCount > 0
         }
 
@@ -84,10 +103,10 @@ class ChooseProjectDialog(
         return dialog
     }
 
-    fun loadProjects() {
+    fun refreshProjects() {
         projectChooseDialog.loadingPanel.startLoading()
 
-        gitlabAPI.listProjectsAsync(simple = true)
+        gitlabAPI.listProjectsAsync(simple = true, starred = filterStaredProjects)
                 .whenCompleteAsync { projects, exception ->
                     SwingUtilities.invokeLater {
                         if (projects != null) {
@@ -119,7 +138,7 @@ class ChooseProjectDialog(
 
 private class ProjectChooseDialog(
         project: Project,
-        private val table: JBTable,
+        private val centerComponent: JComponent,
         private val okActive: () -> Boolean
 ) : DialogWrapper(project, null, true, IdeModalityType.IDE) {
     val loadingPanel = JBLoadingPanel(BorderLayout(), disposable)
@@ -136,7 +155,7 @@ private class ProjectChooseDialog(
     override fun createCenterPanel(): JComponent {
         val panel = panel {
             row {
-                JScrollPane(table)(CCFlags.grow, CCFlags.push)
+                centerComponent(CCFlags.grow, CCFlags.push)
             }
         }
 
@@ -149,7 +168,7 @@ private class ProjectChooseDialog(
         return loadingPanel
     }
 
-    override fun getPreferredFocusedComponent(): JComponent? = table
+    override fun getPreferredFocusedComponent(): JComponent? = centerComponent
 
     public override fun doOKAction() {
         if (okAction.isEnabled && okActive()) {
