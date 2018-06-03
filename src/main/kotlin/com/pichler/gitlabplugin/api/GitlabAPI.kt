@@ -4,6 +4,7 @@ import com.google.gson.*
 import com.pichler.gitlabplugin.model.Discussion
 import com.pichler.gitlabplugin.model.MergeRequest
 import com.pichler.gitlabplugin.model.Note
+import com.pichler.gitlabplugin.model.Project
 import okhttp3.OkHttpClient
 import retrofit2.Call
 import retrofit2.Retrofit
@@ -13,8 +14,39 @@ import retrofit2.http.*
 import java.lang.reflect.Type
 import java.time.Instant
 import java.time.format.DateTimeFormatter
+import java.util.concurrent.CompletableFuture
 
 interface GitlabAPI {
+
+    @GET("projects")
+    fun listProjects(@Query("archived") archived: Boolean? = null,
+                          @Query("visibility") visibility: String? = null,
+                          @Query("order_by") orderBy: String? = null,
+                          @Query("sort") sort: Sort? = null,
+                          @Query("search") search: String? = null,
+                          @Query("simple") simple: Boolean? = null,
+                          @Query("owned") owned: Boolean? = null,
+                          @Query("membership") membership: Boolean? = null,
+                          @Query("starred") starred: Boolean? = null,
+                          @Query("statistics") statistics: Boolean? = null,
+                          @Query("with_custom_attributes") withCustomAttributes: Boolean? = null,
+                          @Query("with_issues_enabled") withIssuesEnabled: Boolean? = null,
+                          @Query("with_merge_request_enabled") withMergeRequestEnabled: Boolean? = null): Call<List<Project>>
+
+    @GET("projects")
+    fun listProjectsAsync(@Query("archived") archived: Boolean? = null,
+                     @Query("visibility") visibility: String? = null,
+                     @Query("order_by") orderBy: String? = null,
+                     @Query("sort") sort: Sort? = null,
+                     @Query("search") search: String? = null,
+                     @Query("simple") simple: Boolean? = null,
+                     @Query("owned") owned: Boolean? = null,
+                     @Query("membership") membership: Boolean? = null,
+                     @Query("starred") starred: Boolean? = null,
+                     @Query("statistics") statistics: Boolean? = null,
+                     @Query("with_custom_attributes") withCustomAttributes: Boolean? = null,
+                     @Query("with_issues_enabled") withIssuesEnabled: Boolean? = null,
+                     @Query("with_merge_request_enabled") withMergeRequestEnabled: Boolean? = null): CompletableFuture<List<Project>>
 
     @GET("projects/{id}/merge_requests")
     fun listMergeRequests(@Path("id") projectID: Int? = null,

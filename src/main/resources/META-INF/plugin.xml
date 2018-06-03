@@ -21,7 +21,7 @@
         <projectConfigurable groupId="tools" groupWeight="130" displayName="Gitlab" id="gitlab"
                              instance="com.pichler.gitlabplugin.GitlabOptionsConfigurable"/>
 
-        <applicationService serviceImplementation="com.pichler.gitlabplugin.GitlabConfigurationStateService"/>
+        <projectService serviceImplementation="com.pichler.gitlabplugin.GitlabConfigurationStateService"/>
     </extensions>
 
     <actions>

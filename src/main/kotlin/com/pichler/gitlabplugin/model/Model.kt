@@ -4,6 +4,106 @@ import com.google.gson.Gson
 import com.google.gson.annotations.SerializedName
 import java.time.Instant
 
+data class Project(
+        val id: Int,
+        val description: String,
+        val name: String,
+        @SerializedName("name_with_namespace")
+        val nameWithNamespace: String,
+        val path: String,
+        @SerializedName("path_with_namespace")
+        val pathWithNamespace: String,
+        @SerializedName("created_at")
+        val createdAt: Instant,
+        @SerializedName("default_branch")
+        val defaultBranch: String,
+        @SerializedName("tag_list")
+        val tagList: List<String>,
+        @SerializedName("ssh_url_to_repo")
+        val sshUrlToRepo: String,
+        @SerializedName("http_url_to_repo")
+        val httpUrlToRepo: String,
+        @SerializedName("web_url")
+        val webUrl: String,
+        @SerializedName("avatar_url_")
+        val avatarUrl: String,
+        @SerializedName("star_count")
+        val starCount: Long,
+        @SerializedName("fork_count")
+        val forkCount: Long,
+        @SerializedName("last_activity_at")
+        val lastActivityAt: Instant,
+        @SerializedName("_links")
+        val links: Links,
+        val archived: Boolean,
+        val visibility: String,
+        val owner: Author,
+        @SerializedName("resolve_outdated_diff_discussions")
+        val resolveOutdatedDiffDiscussions: Boolean,
+        @SerializedName("container_registry_enabled")
+        val containerRegistryEnabled: Boolean,
+        @SerializedName("issues_enabled")
+        val issuesEnabled: Boolean,
+        @SerializedName("merge_requests_enabled")
+        val mergeRequestsEnabled: Boolean,
+        @SerializedName("wiki_enabled")
+        val wikiEnabled: Boolean,
+        @SerializedName("jobs_enabled")
+        val jobsEnabled: Boolean,
+        @SerializedName("snippets_enabled")
+        val snippetsEnabled: Boolean,
+        @SerializedName("shared_runners_enabled")
+        val sharedRunnersEnabled: Boolean,
+        @SerializedName("lfs_enabled")
+        val lfsEnabled: Boolean,
+        @SerializedName("creator_id")
+        val creatorID: Int,
+        val namespace: Namespace,
+        @SerializedName("import_status")
+        val importStatus: String,
+        @SerializedName("open_issues_count")
+        val openIssuesCount: Int,
+        @SerializedName("public_jobs")
+        val publicJobs: Boolean,
+        @SerializedName("ci_config_path")
+        val ciConfigPath: String?,
+        @SerializedName("shared_with_groups")
+        val sharedWithGroups: List<String>,
+        @SerializedName("only_allow_merge_if_pipeline_succeeds")
+        val onlyAllowMergeIfPipelineSucceeds: Boolean,
+        @SerializedName("request_access_enabled")
+        val requestAccessEnabled: Boolean,
+        @SerializedName("only_allow_merge_if_all_discussions_are_resolved")
+        val onlyAllowMergeIfAllDiscussionsAreResolved: Boolean,
+        @SerializedName("printing_merge_request_link_enabled")
+        val printingMergeRequestLinkEnabled: Boolean,
+        @SerializedName("merge_method")
+        val mergeMethod: String
+)
+
+data class Namespace(
+        val id: Long,
+        val name: String,
+        val path: String,
+        val kind: String,
+        @SerializedName("full_path")
+        val fullPath: String,
+        @SerializedName("parent_id")
+        val parentID: Long?
+)
+
+data class Links(
+        val self: String,
+        val issues: String,
+        @SerializedName("merge_requests")
+        val mergeRequests: String,
+        @SerializedName("repo_branches")
+        val repoBranches: String,
+        val labels: String,
+        val events: String,
+        val members: String
+)
+
 data class MergeRequest(
         val id: Long,
         val iid: Long,

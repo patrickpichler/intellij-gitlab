@@ -2,11 +2,14 @@ package com.pichler.gitlabplugin
 
 import com.intellij.openapi.Disposable
 import com.intellij.openapi.options.SearchableConfigurable
+import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.Disposer
 import com.pichler.gitlabplugin.gui.ConfigurationPanel
 import javax.swing.JComponent
 
-class GitlabOptionsConfigurable : SearchableConfigurable, Disposable {
+class GitlabOptionsConfigurable(
+        val project: Project
+) : SearchableConfigurable, Disposable {
     private var configurationPanel: ConfigurationPanel? = null
 
     override fun isModified(): Boolean = configurationPanel!!.isModified()
@@ -18,11 +21,11 @@ class GitlabOptionsConfigurable : SearchableConfigurable, Disposable {
     override fun apply() {
         val state = configurationPanel!!.toState()
 
-        GitlabConfigurationStateService.instance.loadState(state)
+        GitlabConfigurationStateService.instance(project).loadState(state)
     }
 
     override fun createComponent(): JComponent? {
-        configurationPanel = ConfigurationPanel(GitlabConfigurationStateService.instance.state)
+        configurationPanel = ConfigurationPanel(project, GitlabConfigurationStateService.instance(project).state)
         return configurationPanel!!.configPane
     }
 
@@ -34,5 +37,5 @@ class GitlabOptionsConfigurable : SearchableConfigurable, Disposable {
         Disposer.dispose(this)
     }
 
-    override fun reset() = configurationPanel!!.reset(GitlabConfigurationStateService.instance.state)
+    override fun reset() = configurationPanel!!.reset(GitlabConfigurationStateService.instance(project).state)
 }
