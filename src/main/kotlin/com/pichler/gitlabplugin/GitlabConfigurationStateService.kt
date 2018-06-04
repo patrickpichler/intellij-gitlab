@@ -32,7 +32,7 @@ class GitlabConfigurationStateService(
     class GitlabConfigurationState(
             var gitlabURL: String? = null,
             var token: String? = null,
-            var projectID: Int? = null,
+            var projectID: Long? = null,
             var projectName: String? = null
     ) {
         constructor(gitlabURL: String? = null,
@@ -55,10 +55,12 @@ class GitlabConfigurationStateService(
                 else
                     null
             }
+
+        fun isEverythingSet(): Boolean = projectName != null && projectID != null && gitlabURL != null && token != null
     }
 
     data class ProjectState(
-            var id: Int,
+            var id: Long,
             var name: String
     )
 }

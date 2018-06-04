@@ -5,7 +5,7 @@ import com.google.gson.annotations.SerializedName
 import java.time.Instant
 
 data class Project(
-        val id: Int,
+        val id: Long,
         val description: String,
         val name: String,
         @SerializedName("name_with_namespace")

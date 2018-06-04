@@ -17,24 +17,8 @@ import java.time.format.DateTimeFormatter
 import java.util.concurrent.CompletableFuture
 
 interface GitlabAPI {
-
     @GET("projects")
     fun listProjects(@Query("archived") archived: Boolean? = null,
-                          @Query("visibility") visibility: String? = null,
-                          @Query("order_by") orderBy: String? = null,
-                          @Query("sort") sort: Sort? = null,
-                          @Query("search") search: String? = null,
-                          @Query("simple") simple: Boolean? = null,
-                          @Query("owned") owned: Boolean? = null,
-                          @Query("membership") membership: Boolean? = null,
-                          @Query("starred") starred: Boolean? = null,
-                          @Query("statistics") statistics: Boolean? = null,
-                          @Query("with_custom_attributes") withCustomAttributes: Boolean? = null,
-                          @Query("with_issues_enabled") withIssuesEnabled: Boolean? = null,
-                          @Query("with_merge_request_enabled") withMergeRequestEnabled: Boolean? = null): Call<List<Project>>
-
-    @GET("projects")
-    fun listProjectsAsync(@Query("archived") archived: Boolean? = null,
                      @Query("visibility") visibility: String? = null,
                      @Query("order_by") orderBy: String? = null,
                      @Query("sort") sort: Sort? = null,
@@ -46,67 +30,82 @@ interface GitlabAPI {
                      @Query("statistics") statistics: Boolean? = null,
                      @Query("with_custom_attributes") withCustomAttributes: Boolean? = null,
                      @Query("with_issues_enabled") withIssuesEnabled: Boolean? = null,
-                     @Query("with_merge_request_enabled") withMergeRequestEnabled: Boolean? = null): CompletableFuture<List<Project>>
+                     @Query("with_merge_request_enabled") withMergeRequestEnabled: Boolean? = null): Call<List<Project>>
+
+    @GET("projects")
+    fun listProjectsAsync(@Query("archived") archived: Boolean? = null,
+                          @Query("visibility") visibility: String? = null,
+                          @Query("order_by") orderBy: String? = null,
+                          @Query("sort") sort: Sort? = null,
+                          @Query("search") search: String? = null,
+                          @Query("simple") simple: Boolean? = null,
+                          @Query("owned") owned: Boolean? = null,
+                          @Query("membership") membership: Boolean? = null,
+                          @Query("starred") starred: Boolean? = null,
+                          @Query("statistics") statistics: Boolean? = null,
+                          @Query("with_custom_attributes") withCustomAttributes: Boolean? = null,
+                          @Query("with_issues_enabled") withIssuesEnabled: Boolean? = null,
+                          @Query("with_merge_request_enabled") withMergeRequestEnabled: Boolean? = null): CompletableFuture<List<Project>>
 
     @GET("projects/{id}/merge_requests")
-    fun listMergeRequests(@Path("id") projectID: Int? = null,
+    fun listMergeRequests(@Path("id") projectID: Long = projectID(),
                           @Query("source_branch") sourceBranch: String? = null,
                           @Query("target_branch") targetBranch: String? = null,
                           @Query("state") state: MergeRequestState? = null,
                           @Query("order_by") orderBy: OrderBy? = null): Call<List<MergeRequest>>
 
     @GET("projects/{id}/merge_requests/{merge_request_iid}/notes")
-    fun listMergeRequestNotes(@Path("id") projectID: Long,
+    fun listMergeRequestNotes(@Path("id") projectID: Long = projectID(),
                               @Path("merge_request_iid") mergeRequestIID: Long,
                               @Query("sort") sort: Sort? = null,
                               @Query("order_by") orderBy: OrderBy? = null): Call<List<Note>>
 
     @DELETE("projects/{id}/merge_requests/{merge_request_iid}/notes/{note_id}")
-    fun deleteMergeRequestNote(@Path("id") projectID: Long,
+    fun deleteMergeRequestNote(@Path("id") projectID: Long = projectID(),
                                @Path("merge_request_iid") mergeRequestIID: Long,
                                @Path("note_id") noteId: Long): Call<Note>
 
     @GET("projects/{id}/merge_requests/{merge_request_iid}/discussions")
-    fun listMergeRequestDiscussions(@Path("id") projectID: Long,
+    fun listMergeRequestDiscussions(@Path("id") projectID: Long = projectID(),
                                     @Path("merge_request_iid") mergeRequestIID: Long): Call<List<Discussion>>
 
     @GET("projects/{id}/merge_requests/{merge_request_iid}/discussions/{discussion_id}")
-    fun getMergeRequestDiscussion(@Path("id") projectID: Long,
+    fun getMergeRequestDiscussion(@Path("id") projectID: Long = projectID(),
                                   @Path("merge_request_iid") mergeRequestIID: Long,
                                   @Path("discussion_id") discussionID: String): Call<Discussion>
 
     @GET("projects/{id}/merge_requests/{merge_request_iid}/discussions/{discussion_id}/notes")
-    fun listMergeRequestDiscussionNotes(@Path("id") projectID: Long,
+    fun listMergeRequestDiscussionNotes(@Path("id") projectID: Long = projectID(),
                                         @Path("merge_request_iid") mergeRequestIID: Long,
                                         @Path("discussion_id") discussionID: String,
                                         @Query("sort") sort: Sort? = null,
                                         @Query("order_by") orderBy: OrderBy? = null): Call<List<Note>>
 
     @PUT("projects/{id}/merge_requests/{merge_request_iid}/discussions/{discussion_id}")
-    fun resolveMergeRequestDiscussion(@Path("id") projectID: Long,
+    fun resolveMergeRequestDiscussion(@Path("id") projectID: Long = projectID(),
                                       @Path("merge_request_iid") mergeRequestIID: Long,
                                       @Path("discussion_id") discussionID: String,
                                       @Query("resolved") resolved: Boolean): Call<Discussion>
 
     @POST("projects/{id}/merge_requests/{merge_request_iid}/discussions/{discussion_id}/notes")
-    fun addMergeRequestDiscussionNote(@Path("id") projectID: Long,
+    fun addMergeRequestDiscussionNote(@Path("id") projectID: Long = projectID(),
                                       @Path("merge_request_iid") mergeRequestIID: Long,
                                       @Path("discussion_id") discussionID: String,
                                       @Query("body") body: String): Call<Note>
 
     @DELETE("projects/{id}/merge_requests/{merge_request_iid}/discussions/{discussion_id}/notes/{note_id}")
-    fun deleteMergeRequestDiscussionNote(@Path("id") projectID: Long,
+    fun deleteMergeRequestDiscussionNote(@Path("id") projectID: Long = projectID(),
                                          @Path("merge_request_iid") mergeRequestIID: Long,
                                          @Path("discussion_id") discussionID: String,
                                          @Path("note_id") noteId: Long): Call<Note>
 
     @POST("projects/{id}/merge_requests/{merge_request_iid}/discussions")
-    fun createDiscussion(@Path("id") projectID: Long,
+    fun createDiscussion(@Path("id") projectID: Long = projectID(),
                          @Path("merge_request_iid") mergeRequestIID: Long,
                          @Query("body") body: String): Call<Discussion>
 
     @POST("projects/{id}/merge_requests/{merge_request_iid}/discussions")
-    fun createDiscussion(@Path("id") projectID: Long,
+    fun createDiscussion(@Path("id") projectID: Long = projectID(),
                          @Path("merge_request_iid") mergeRequestIID: Long,
                          @Query("body") body: String,
                          @Query("position[base_sha]") baseSHA: String,
@@ -118,7 +117,13 @@ interface GitlabAPI {
                          @Query("position[new_line]") newLine: Long? = null,
                          @Query("position[position_type]") positionType: PositionType = PositionType.TEXT): Call<Discussion>
 
+    fun projectID(): Long = throw NotImplementedError()
 
+
+}
+
+class GitlabAPIWithProjectID(val projectID: Long, gitlabAPI: GitlabAPI) : GitlabAPI by gitlabAPI {
+    override fun projectID(): Long = projectID
 }
 
 enum class PositionType(val value: String) {
@@ -151,6 +156,11 @@ enum class MergeRequestState(val value: String) {
 }
 
 fun buildGitlabAPI(gitlabURL: String,
+                   gitlabToken: String,
+                   projectID: Long): GitlabAPIWithProjectID = buildGitlabAPI(gitlabURL, gitlabToken).withProjectID(projectID)
+
+
+fun buildGitlabAPI(gitlabURL: String,
                    gitlabToken: String): GitlabAPI {
     val gson = GsonBuilder()
             .registerTypeAdapter(Instant::class.java, InstantTypeAdapter())
@@ -174,6 +184,8 @@ fun buildGitlabAPI(gitlabURL: String,
             .build()
             .create(GitlabAPI::class.java)
 }
+
+fun GitlabAPI.withProjectID(projectID: Long): GitlabAPIWithProjectID = GitlabAPIWithProjectID(projectID, this)
 
 private class InstantTypeAdapter : JsonDeserializer<Instant?>, JsonSerializer<Instant?> {
 

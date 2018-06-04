@@ -107,7 +107,7 @@ class ChooseProjectDialog(
         projectChooseDialog.loadingPanel.startLoading()
 
         gitlabAPI.listProjectsAsync(simple = true, starred = filterStaredProjects)
-                .whenCompleteAsync { projects, exception ->
+                .whenCompleteAsync { projects, _ ->
                     SwingUtilities.invokeLater {
                         if (projects != null) {
                             installTableModel(projects)
